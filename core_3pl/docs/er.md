@@ -15,13 +15,13 @@ erDiagram
         string password_hash
         string role
         datetime created_at
+        datetime last_login
     }
  
     TENANT {
         uuid id PK
         uuid user_id FK
         string company_name
-        string contact_name
         datetime created_at
     }
  
@@ -30,7 +30,6 @@ erDiagram
         uuid user_id FK
         string full_name
         string department
-        string permission_level
         datetime created_at
     }
  
