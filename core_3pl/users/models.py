@@ -1,8 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
-from .enums import Role
+from .enums import Role, Department
 from django.utils import timezone
 from config.models import BaseModel
+
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password, **extra_fields):
@@ -16,9 +17,35 @@ class UserManager(BaseUserManager):
 
 class User(BaseModel, AbstractBaseUser):
     email = models.EmailField(unique=True, null=False, blank=False)
-    role = models.CharField(max_length=20, choices=Role.choices, null=False, blank=False, default=Role.TENANT)
+    role = models.CharField(
+        max_length=20,
+        choices=Role.choices,
+        null=False,
+        blank=False,
+        default=Role.TENANT,
+    )
+    is_active = models.BooleanField(default=True)
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
     objects = UserManager()
+
+
+class Ops(BaseModel):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    full_name = models.CharField(unique=True, max_length=255, null=False, blank=False)
+    department = models.CharField(
+        max_length=20,
+        choices=Department.choices,
+        default=Department.CUSTOMER_SUPPORT,
+        null=False,
+        blank=False,
+    )
+
+
+class Tenant(BaseModel):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    company_name = models.CharField(
+        unique=True, max_length=255, null=False, blank=False
+    )
