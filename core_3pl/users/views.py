@@ -1,3 +1,10 @@
-from django.shortcuts import render
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .models import User
+from .serializers import UserGetSerializer
 
-# Create your views here.
+class ListUsers(APIView):
+    def get(self, request):
+        users = User.objects.all()
+        serializer = UserGetSerializer(users, many= True)
+        return Response(serializer.data)

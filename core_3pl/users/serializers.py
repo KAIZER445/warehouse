@@ -11,6 +11,11 @@ class UserRegisterSerializer(BaseModelSerializer):
         read_only_fields = BaseModelSerializer.Meta.read_only_fields + ["role", "is_active"]
         extra_kwargs = {"password": {"write_only": True}}
 
+class UserGetSerializer(BaseModelSerializer):
+    class Meta(BaseModelSerializer.Meta):
+        model = User
+        fields = "__all__"
+        read_only_fields = fields
 
 class TenantRegisterSerializer(BaseModelSerializer):
     class Meta(BaseModelSerializer.Meta):
