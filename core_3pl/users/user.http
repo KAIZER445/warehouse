@@ -1,0 +1,96 @@
+### Variables
+@baseUrl = http://localhost:8000
+@contentType = application/json
+
+### ------------------------------------------------------------
+### 1. Register a TENANT user
+### ------------------------------------------------------------
+POST {{baseUrl}}/user/register/
+Content-Type: {{contentType}}
+
+{
+  "email": "tenant1@example.com",
+  "password": "StrongPass123",
+  "role": "tenant",
+  "company_name": "Acme Corp"
+}
+
+### ------------------------------------------------------------
+### 2. Register an OPS user
+### ------------------------------------------------------------
+POST {{baseUrl}}/user/register/
+Content-Type: {{contentType}}
+
+{
+  "email": "ops1@example.com",
+  "password": "StrongPass123",
+  "role": "ops",
+  "full_name": "Jane Operator",
+  "department": "customer_support"
+}
+
+### ------------------------------------------------------------
+### 3. Invalid role (should return 400)
+### ------------------------------------------------------------
+POST {{baseUrl}}/user/register/
+Content-Type: {{contentType}}
+
+{
+  "email": "invalid1@example.com",
+  "password": "StrongPass123",
+  "role": "superadmin"
+}
+
+### ------------------------------------------------------------
+### 4. Missing required field - no password (should return 400)
+### ------------------------------------------------------------
+POST {{baseUrl}}/user/register/
+Content-Type: {{contentType}}
+
+{
+  "email": "nopass@example.com",
+  "role": "tenant",
+  "company_name": "No Password Inc"
+}
+
+### ------------------------------------------------------------
+### 5. Password too short (should return 400, min_length=8)
+### ------------------------------------------------------------
+POST {{baseUrl}}/user/register/
+Content-Type: {{contentType}}
+
+{
+  "email": "shortpass@example.com",
+  "password": "123",
+  "role": "tenant",
+  "company_name": "Short Pass LLC"
+}
+
+### ------------------------------------------------------------
+### 6. Duplicate email (should return 400 - unique constraint)
+### ------------------------------------------------------------
+POST {{baseUrl}}/user/register/
+Content-Type: {{contentType}}
+
+{
+  "email": "tenant1@example.com",
+  "password": "StrongPass123",
+  "role": "tenant",
+  "company_name": "Duplicate Co"
+}
+
+### ------------------------------------------------------------
+### 7. Attempt privilege escalation - client tries to set role/is_active/user
+### Should be silently ignored since these are read_only_fields
+### ------------------------------------------------------------
+POST {{baseUrl}}/user/register/
+Content-Type: {{contentType}}
+
+{
+  "email": "hacker@example.com",
+  "password": "StrongPass123",
+  "role": "tenant",
+  "is_active": false,
+  "user": 1,
+  "company_name": "Sneaky Inc"
+}
