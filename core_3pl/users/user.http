@@ -94,3 +94,10 @@ Content-Type: {{contentType}}
   "user": 1,
   "company_name": "Sneaky Inc"
 }
+
+### ------------------------------------------------------------
+### 8. get users list
+### ------------------------------------------------------------
+GET {{baseUrl}}/user/list/
+Content-Type: {{contentType}}
+Authorization: Bearer {{ accessToken }}

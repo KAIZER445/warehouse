@@ -6,3 +6,12 @@ Content-Type: application/json
     "email" : "tenant1@example.com",
     "password": "StrongPass123"
 }
+
+###
+POST http://127.0.0.1:8000/api/token/
+Content-Type: application/json
+
+{
+    "email": "ops1@example.com",
+    "password": "StrongPass123"
+}

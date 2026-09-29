@@ -1,7 +1,9 @@
 from django.urls import path
-from .views import ListUsers, RegisterUser
+from .views import ListUsers, ListTenants, ListOps, RegisterUser
 
 urlpatterns = [
     path('list/', ListUsers.as_view()),
+    path('list/tenants/', ListTenants.as_view()),
+    path('list/ops/', ListOps.as_view()),
     path('register/', RegisterUser.as_view())
 ]

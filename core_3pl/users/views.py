@@ -1,10 +1,11 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import User
-from .serializers import UserGetSerializer, UserRegisterSerializer, TenantRegisterSerializer, OpsRegisterSerializer
+from .models import User, Tenant, Ops
+from .serializers import UserGetSerializer, TenantGetSerializer, OpsGetSerializer, UserRegisterSerializer, TenantRegisterSerializer, OpsRegisterSerializer
 from rest_framework import status
 from .enums import Role
 from django.db import transaction
+from config.permission import IsOps
 
 class RegisterUser(APIView):
     def post(self, request):
@@ -28,7 +29,22 @@ class RegisterUser(APIView):
         return Response(UserGetSerializer(user).data, status=status.HTTP_201_CREATED)
 
 class ListUsers(APIView):
+    permission_classes = [IsOps]
     def get(self, request):
         users = User.objects.all()
         serializer = UserGetSerializer(users, many= True)
+        return Response(serializer.data)
+
+class ListTenants(APIView):
+    permission_classes = [IsOps]
+    def get(self, request):
+        users = Tenant.objects.all()
+        serializer = TenantGetSerializer(users, many= True)
+        return Response(serializer.data)
+
+class ListOps(APIView):
+    permission_classes = [IsOps]
+    def get(self, request):
+        users = Ops.objects.all()
+        serializer = OpsGetSerializer(users, many= True)
         return Response(serializer.data)
