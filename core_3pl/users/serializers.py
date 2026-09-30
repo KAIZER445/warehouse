@@ -1,6 +1,7 @@
-from rest_framework import serializers
-from .models import User, Tenant, Ops
 from config.serializers import BaseModelSerializer
+from rest_framework import serializers
+
+from .models import Ops, Tenant, User
 
 
 class UserRegisterSerializer(BaseModelSerializer):
@@ -18,9 +19,11 @@ class UserRegisterSerializer(BaseModelSerializer):
 class UserGetSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        exclude = ["password"]
+        exclude = ("password",)
+
 
 # ------------------------------------------------------------
+
 
 class TenantRegisterSerializer(BaseModelSerializer):
     class Meta(BaseModelSerializer.Meta):
@@ -34,7 +37,9 @@ class TenantGetSerializer(serializers.ModelSerializer):
         model = Tenant
         fields = "__all__"
 
+
 # ------------------------------------------------------------
+
 
 class OpsRegisterSerializer(BaseModelSerializer):
     class Meta(BaseModelSerializer.Meta):
