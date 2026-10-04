@@ -1,5 +1,5 @@
 from rest_framework.permissions import BasePermission
-from core_3pl.users.domain.enums import Role
+from users.core.domain.enums import Role
 
 class IsOps(BasePermission):
     def has_permission(self, request, view):

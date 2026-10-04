@@ -9,5 +9,5 @@ class Tenant:
 
     def deactivate(self, active_lease_count):
         if active_lease_count > 0:
-            raise ValueError("Tenant has a active leases")
+            raise ValueError("Tenant has active leases")
         self.is_active = False

@@ -3,17 +3,11 @@ from django.db import transaction
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
-from .domain.enums import Role
-from .models import Ops, Tenant, User
-from .serializers import (
-    OpsGetSerializer,
-    OpsRegisterSerializer,
-    TenantGetSerializer,
-    TenantRegisterSerializer,
-    UserGetSerializer,
-    UserRegisterSerializer,
-)
+from ....core.domain.enums import Role
+from ....models import User
+from ..serializers.user import UserGetSerializer, UserRegisterSerializer
+from ..serializers.tenant import TenantRegisterSerializer
+from ..serializers.ops import OpsRegisterSerializer
 
 
 class RegisterUser(APIView):
@@ -46,22 +40,4 @@ class ListUsers(APIView):
     def get(self, request):
         users = User.objects.all()
         serializer = UserGetSerializer(users, many=True)
-        return Response(serializer.data)
-
-
-class ListTenants(APIView):
-    permission_classes = (IsOps,)
-
-    def get(self, request):
-        users = Tenant.objects.all()
-        serializer = TenantGetSerializer(users, many=True)
-        return Response(serializer.data)
-
-
-class ListOps(APIView):
-    permission_classes = (IsOps,)
-
-    def get(self, request):
-        users = Ops.objects.all()
-        serializer = OpsGetSerializer(users, many=True)
         return Response(serializer.data)

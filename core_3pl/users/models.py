@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
 from django.utils import timezone
 
-from .domain.enums import Department, Role
+from .core.domain.enums import Department, Role
 
 
 class UserManager(BaseUserManager):
