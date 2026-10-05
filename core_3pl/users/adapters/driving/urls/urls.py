@@ -7,5 +7,5 @@ urlpatterns = [
     path("list/tenants/", ListTenants.as_view()),
     path("list/ops/", ListOps.as_view()),
     path("register/", RegisterUser.as_view()),
-    path("tenants/<int:tenant_id>/deactivate/", DeactivateTenant.as_view()),
+    path("tenants/<uuid:tenant_id>/deactivate/", DeactivateTenant.as_view()),
 ]

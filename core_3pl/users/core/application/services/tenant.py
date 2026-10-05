@@ -9,3 +9,6 @@ class TenantService(TenantServicePort):
         tenant = self.repo.get(tenant_id)
         tenant.deactivate(self.repo.count_active_leases(tenant.id))
         self.repo.save(tenant)
+
+    def list_all(self):
+        return self.repo.list_all()

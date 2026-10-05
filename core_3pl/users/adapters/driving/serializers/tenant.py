@@ -11,7 +11,9 @@ class TenantRegisterSerializer(BaseModelSerializer):
         read_only_fields = BaseModelSerializer.Meta.read_only_fields + ["user"]
 
 
-class TenantGetSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Tenant
-        fields = "__all__"
+class TenantGetSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
+    user = serializers.UUIDField(source="user_id")
+    company_name = serializers.CharField()
+    created_at = serializers.DateTimeField()
+    updated_at = serializers.DateTimeField()

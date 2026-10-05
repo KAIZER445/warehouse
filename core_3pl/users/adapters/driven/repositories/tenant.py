@@ -17,3 +17,11 @@ class TenantRepository(TenantPort):
         # from leasing.models import SpaceLease
         # return SpaceLease.objects.filter(tenant_id=tenant_id, status="ACTIVE").count()
         return 0
+
+    def create(self, user_id, company_name):
+        row = Tenant.objects.create(user_id=user_id, company_name=company_name)
+        row = Tenant.objects.select_related("user").get(id=row.id)
+        return to_entity(row)
+
+    def list_all(self):
+        return [to_entity(row) for row in Tenant.objects.select_related("user").all()]

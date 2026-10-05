@@ -11,7 +11,10 @@ class OpsRegisterSerializer(BaseModelSerializer):
         read_only_fields = BaseModelSerializer.Meta.read_only_fields + ["user"]
 
 
-class OpsGetSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Ops
-        fields = "__all__"
+class OpsGetSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
+    user = serializers.UUIDField(source="user_id")
+    full_name = serializers.CharField()
+    department = serializers.CharField()
+    created_at = serializers.DateTimeField()
+    updated_at = serializers.DateTimeField()

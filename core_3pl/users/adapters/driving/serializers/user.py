@@ -16,7 +16,11 @@ class UserRegisterSerializer(BaseModelSerializer):
         return User.objects.create_user(**validated_data)
 
 
-class UserGetSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        exclude = ("password",)
+class UserGetSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
+    email = serializers.EmailField()
+    role = serializers.CharField()
+    is_active = serializers.BooleanField()
+    last_login = serializers.DateTimeField()
+    created_at = serializers.DateTimeField()
+    updated_at = serializers.DateTimeField()

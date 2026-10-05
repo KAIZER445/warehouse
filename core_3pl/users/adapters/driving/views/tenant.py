@@ -1,20 +1,21 @@
 from config.permission import IsOps
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from users.models import Tenant
-from users.core.application.services import TenantService
 from users.core.domain.ports import TenantServicePort
+from users.core.application.services import TenantService
 from users.adapters.driven.repositories import TenantRepository
-from users.adapters.driving.serializers import TenantGetSerializer
-from rest_framework import status
+from ..serializers.tenant import TenantGetSerializer
 
 
 class ListTenants(APIView):
     permission_classes = (IsOps,)
+    service: TenantServicePort = TenantService(TenantRepository())
 
     def get(self, request):
-        tenants = Tenant.objects.all()
+        tenants = self.service.list_all()
         serializer = TenantGetSerializer(tenants, many=True)
         return Response(serializer.data)
 
