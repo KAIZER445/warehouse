@@ -1,11 +1,16 @@
 from datetime import datetime, timezone
 
-class WareHouse:
+class Capacity:
     def __init__(self, id, updated_at, total_capacity, current_allocated_space):
         self.id = id
         self.updated_at = updated_at
         self.total_capacity = total_capacity
         self.current_allocated_space = current_allocated_space
+
+    def update_total_capacity(self, amount: int):
+        if self.current_allocated_space > amount:
+            raise ValueError("cannot change the total capacity as the current allocated space is more")
+        self.current_allocated_space = amount
 
     def update_allocated_space(self, amount: int, operation: str):
         if operation == "ADDITION":
