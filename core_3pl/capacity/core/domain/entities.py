@@ -10,7 +10,7 @@ class Capacity:
     def update_total_capacity(self, amount: int):
         if self.current_allocated_space > amount:
             raise ValueError("cannot change the total capacity as the current allocated space is more")
-        self.current_allocated_space = amount
+        self.total_capacity = amount
 
     def update_allocated_space(self, amount: int, operation: str):
         if operation == "ADDITION":
