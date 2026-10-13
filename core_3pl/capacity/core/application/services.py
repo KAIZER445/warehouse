@@ -9,3 +9,6 @@ class CapacityService(CapacityServicePort):
         capacity: CapacityEntity = self.repo.get()
         capacity.update_total_capacity(amount)
         self.repo.save(capacity)
+
+    def get_capacity(self):
+        return self.repo.get()
