@@ -6,3 +6,6 @@ class CapacityServicePort(ABC):
 
     @abstractmethod
     def get_capacity(self): ...
+
+    @abstractmethod
+    def update_allocated_space(self, amount:int, operation: str): ...
