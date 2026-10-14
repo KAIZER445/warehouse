@@ -1,0 +1,11 @@
+asgiref==3.12.1
+django==6.1.1
+djangorestframework==3.18.1
+djangorestframework-simplejwt==5.5.1
+psycopg==3.3.5
+psycopg-binary==3.3.5
+pygments==2.21.0
+pyjwt==2.15.0
+python-dotenv==1.2.3
+ruff==0.16.9
+sqlparse==0.6.0
