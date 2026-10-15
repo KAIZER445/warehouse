@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 class Tenant:
     def __init__(self, id, user_id, company_name, is_active, created_at, updated_at):
         self.id = id
@@ -11,3 +12,4 @@ class Tenant:
         if active_lease_count > 0:
             raise ValueError("Tenant has active leases")
         self.is_active = False
+        self.updated_at = datetime.now(timezone.utc)
