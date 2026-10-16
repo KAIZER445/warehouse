@@ -11,9 +11,10 @@ class Lease:
         self.start_date = start_date
         self.end_date = end_date
 
-    def calculate_minimum_required_space = 
+    # def calculate_minimum_required_space:
+        
 
-    def create_lease(self, tenant_id, selected_space, minimum_required_space, total_volume, total_weight, term_months, start_date, end_date):
-          minimum_space = total_volume
-          if selected_space < minimum_required_space:
-               raise ValueError("space less than minimum required space is not valid")
+    # def create_lease(self, tenant_id, selected_space, minimum_required_space, total_volume, total_weight, term_months, start_date, end_date):
+    #       minimum_space = total_volume
+    #       if selected_space < minimum_required_space:
+    #            raise ValueError("space less than minimum required space is not valid")
