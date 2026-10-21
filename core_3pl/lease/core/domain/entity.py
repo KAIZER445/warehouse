@@ -49,13 +49,19 @@ class Lease:
         }
 
         for book in books:
+            quantity = book.quanity
+            box_combo = []
             for box in BoxSize:
-                quantity = book.quanity
-                box_combo = {}
                 capacity_per_box = books_per_box[book.id][box.name]
-                if capacity_per_box!=0:
+                if capacity_per_box == 0:
                     continue
-                if quantity
+                if quantity < capacity_per_box:
+                    box_combo.append(box)
+                    return
+                elif quantity > capacity_per_box:
+                    box_combo.append(box)
+                    quantity = quantity - capacity_per_box
+                    return
 
 
 
