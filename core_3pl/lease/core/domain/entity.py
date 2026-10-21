@@ -57,11 +57,11 @@ class Lease:
                     continue
                 if quantity < capacity_per_box:
                     box_combo.append(box)
-                    return
+                    continue
                 elif quantity > capacity_per_box:
                     box_combo.append(box)
                     quantity = quantity - capacity_per_box
-                    return
+                    continue
 
 
 
