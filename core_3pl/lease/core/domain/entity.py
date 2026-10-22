@@ -29,6 +29,7 @@ class Lease:
         self.start_date = start_date
         self.end_date = end_date
 
+    @staticmethod
     def books_per_box(books: list) -> dict:
         results = {}
         for book in books:
@@ -41,27 +42,26 @@ class Lease:
                 )
         return results
 
-    def greedy_box_allocation(books: list):
-        # books_per_box = books_per_box(books)
-        books_per_box = {
-            "b1": {"SMALL": 6, "MEDIUM": 40, "LARGE": 117},
-            "b2": {"SMALL": 0, "MEDIUM": 7,  "LARGE": 20},
-        }
+    @staticmethod
+    def greedy_box_allocation(books: list) -> dict:
+        capacities = Lease.books_per_box(books)
 
+        box_combo = {}
         for book in books:
-            quantity = book.quanity
-            box_combo = []
-            for box in BoxSize:
-                capacity_per_box = books_per_box[book.id][box.name]
+            quantity = book.quantity
+            for box in reversed(BoxSize):
+                capacity_per_box = capacities[book.id][box.name]
                 if capacity_per_box == 0:
                     continue
-                if quantity < capacity_per_box:
-                    box_combo.append(box)
-                    continue
-                elif quantity > capacity_per_box:
-                    box_combo.append(box)
-                    quantity = quantity - capacity_per_box
-                    continue
-
-
-
+                if quantity // capacity_per_box != 0:
+                    current_combo = quantity // capacity_per_box
+                    box_combo[box.name] = box_combo.get(box.name, 0) + current_combo
+                    quantity = quantity - (capacity_per_box * current_combo)
+            if quantity > 0:
+                for box in BoxSize:
+                    if capacities[book.id][box.name] >= quantity:
+                        box_combo[box.name] = box_combo.get(box.name, 0) + 1
+                        break
+                else:
+                    raise ValueError(f"Book {book.id} does not fit in any box")
+        return box_combo
