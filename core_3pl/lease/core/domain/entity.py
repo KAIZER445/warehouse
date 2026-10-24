@@ -37,9 +37,7 @@ class Lease:
             box_combination=box_combo,
             total_boxes=sum(box_combo.values()),
             minimum_required_space=cls.calculate_minimum_required_space(box_combo),
-            total_volume=sum(
-                b.length * b.width * b.thickness * b.quantity for b in books
-            ),
+            total_volume=cls.calculate_total_volume(books),
         )
 
     @staticmethod
@@ -84,4 +82,11 @@ class Lease:
         total = Decimal("0")
         for name, count in box_combo.items():
             total += BoxSize[name].value.volume * count
+        return total
+
+    @staticmethod
+    def calculate_total_volume(books: list) -> Decimal:
+        total = Decimal("0")
+        for book in books:
+            total += book.length * book.width * book.thickness * book.quantity
         return total
