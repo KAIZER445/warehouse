@@ -5,12 +5,12 @@ from math import floor
 class Lease:
     def __init__(
         self,
-        id,
         tenant_id,
         box_combination,
         total_boxes,
         minimum_required_space,
         total_volume,
+        id=None,
         status=LeaseStatus.PENDING,
         selected_space=None,
         term_months=None,
@@ -28,6 +28,22 @@ class Lease:
         self.term_months = term_months
         self.start_date = start_date
         self.end_date = end_date
+
+    @classmethod
+    def create_quote(cls, tenant_id, books):
+        box_combo = cls.greedy_box_allocation(books)
+        return cls(
+            tenant_id=tenant_id,
+            box_combination=box_combo,
+            total_boxes=sum(box_combo.values()),
+            minimum_required_space=sum(
+                BoxSize[name].value.volume * count
+                for name, count in box_combo.items()
+            ),
+            total_volume=sum(
+                b.length * b.width * b.thickness * b.quantity for b in books
+            ),
+        )
 
     @staticmethod
     def books_per_box(books: list) -> dict:
