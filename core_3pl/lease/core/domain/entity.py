@@ -1,6 +1,6 @@
 from .enum import LeaseStatus, BoxSize
 from math import floor
-
+from decimal import Decimal
 
 class Lease:
     def __init__(
@@ -36,10 +36,7 @@ class Lease:
             tenant_id=tenant_id,
             box_combination=box_combo,
             total_boxes=sum(box_combo.values()),
-            minimum_required_space=sum(
-                BoxSize[name].value.volume * count
-                for name, count in box_combo.items()
-            ),
+            minimum_required_space=cls.calculate_minimum_required_space(box_combo),
             total_volume=sum(
                 b.length * b.width * b.thickness * b.quantity for b in books
             ),
@@ -81,3 +78,10 @@ class Lease:
                 else:
                     raise ValueError(f"Book {book.id} does not fit in any box")
         return box_combo
+
+    @staticmethod
+    def calculate_minimum_required_space(box_combo: dict) -> Decimal:
+        total = Decimal("0")
+        for name, count in box_combo.items():
+            total += BoxSize[name].value.volume * count
+        return total

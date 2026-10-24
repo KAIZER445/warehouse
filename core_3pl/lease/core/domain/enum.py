@@ -1,7 +1,7 @@
 from django.db import models
 from dataclasses import dataclass
 from enum import Enum
-
+from decimal import Decimal
 
 class LeaseStatus(models.TextChoices):
     PENDING = "PENDING"
@@ -15,6 +15,10 @@ class Dimensions:
     length: int
     width: int
     height: int
+
+    @property
+    def volume(self) -> Decimal:
+        return self.length * self.width * self.height
 
 
 class BoxSize(Enum):
