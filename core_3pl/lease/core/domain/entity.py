@@ -1,6 +1,9 @@
 from .enum import LeaseStatus, BoxSize
 from math import floor
 from decimal import Decimal
+from datetime import timedelta
+
+MAX_TERM_MONTHS = 36
 
 class Lease:
     def __init__(
@@ -39,6 +42,19 @@ class Lease:
             minimum_required_space=cls.calculate_minimum_required_space(box_combo),
             total_volume=cls.calculate_total_volume(books),
         )
+
+    def activate_lease(self, selected_space, term_months: int, start_date):
+        if selected_space < self.minimum_required_space:
+            raise ValueError("Selected space cannot be less than the minimum required space")
+
+        if not (1 <= term_months <= MAX_TERM_MONTHS):
+            raise ValueError(f"Term must be between 1 and {MAX_TERM_MONTHS} months")
+
+        self.selected_space = selected_space
+        self.term_months = term_months
+        self.start_date = start_date
+        self.end_date = start_date + timedelta(days= 30 * term_months)
+        self.status = LeaseStatus.ACTIVE
 
     @staticmethod
     def books_per_box(books: list) -> dict:
