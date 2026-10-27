@@ -13,6 +13,7 @@ class Lease:
         total_boxes,
         minimum_required_space,
         total_volume,
+        total_weight,
         id=None,
         status=LeaseStatus.PENDING,
         selected_space=None,
@@ -26,6 +27,7 @@ class Lease:
         self.total_boxes = total_boxes
         self.minimum_required_space = minimum_required_space
         self.total_volume = total_volume
+        self.total_weight = total_weight
         self.status = status
         self.selected_space = selected_space
         self.term_months = term_months
@@ -41,6 +43,7 @@ class Lease:
             total_boxes=sum(box_combo.values()),
             minimum_required_space=cls.calculate_minimum_required_space(box_combo),
             total_volume=cls.calculate_total_volume(books),
+            total_weight=cls.calculate_total_weight(books)
         )
 
     def activate_lease(self, selected_space, term_months: int, start_date):
@@ -108,4 +111,11 @@ class Lease:
         total = Decimal("0")
         for book in books:
             total += book.length * book.width * book.thickness * book.quantity
+        return total
+
+    @staticmethod
+    def calculate_total_weight(books: list) -> Decimal:
+        total = Decimal("0")
+        for book in books:
+            total += book.weight * book.quantity
         return total
