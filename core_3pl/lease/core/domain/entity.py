@@ -44,8 +44,11 @@ class Lease:
         )
 
     def activate_lease(self, selected_space, term_months: int, start_date):
-        if selected_space < self.minimum_required_space:
-            raise ValueError("Selected space cannot be less than the minimum required space")
+        # logic needs to be changed for end date as time delta approach is not accurate 
+        if self.status != LeaseStatus.PENDING:
+            raise ValueError("only pending lease can be activated")
+        if selected_space < self.minimum_required_space or selected_space > 3 * self.minimum_required_space:
+            raise ValueError("Selected space cannot be less than the minimum required space or more than triple the minimum required space")
 
         if not (1 <= term_months <= MAX_TERM_MONTHS):
             raise ValueError(f"Term must be between 1 and {MAX_TERM_MONTHS} months")
