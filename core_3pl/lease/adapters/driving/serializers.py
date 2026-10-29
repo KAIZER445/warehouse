@@ -7,14 +7,6 @@ class LeaseGetSerializer(serializers.ModelSerializer):
         model = LeaseModel
         fields = "__all__"
 
-class CreateQuoteSerializer(serializers.Serializer):
-    tenant_id = serializers.IntegerField()
-    box_combination = serializers.JSONField()
-    total_boxes = serializers.IntegerField()
-    minimum_required_space = serializers.DecimalField()
-    total_volume = serializers.DecimalField()
-    total_weight = serializers.DecimalField()
-
 class BookInputSerializer(serializers.Serializer):
     title = serializers.CharField(max_length=255)
     author = serializers.CharField(max_length=255)
@@ -25,3 +17,12 @@ class BookInputSerializer(serializers.Serializer):
     thickness = serializers.DecimalField(max_digits=6, decimal_places=2, min_value=Decimal("0.01"))
     unit_weight = serializers.DecimalField(max_digits=8, decimal_places=3, min_value=Decimal("0.001"))
     quantity = serializers.IntegerField(min_value=1)
+
+class CreateQuoteSerializer(serializers.Serializer):
+    books = BookInputSerializer(many=True, allow_empty=False)
+
+class QuoteResponseSerializer(serializers.Serializer):
+    lease_id = serializers.UUIDField()
+    status = serializers.CharField()
+    minimum_required_space = serializers.DecimalField(max_digits=20, decimal_places=2)
+    box_combination = serializers.JSONField()
