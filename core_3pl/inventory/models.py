@@ -15,6 +15,6 @@ class Inventory(BaseModel):
     thickness = models.DecimalField(max_digits=6, decimal_places=2)
     unit_weight = models.DecimalField(max_digits=8, decimal_places=3)
     quantity = models.PositiveIntegerField()
-    unit_volume = models.DecimalField(max_digits=14, decimal_places=2)    # cm³
-    total_volume = models.DecimalField(max_digits=20, decimal_places=2)   # cm³
+    unit_volume = models.DecimalField(max_digits=14, decimal_places=2)
+    total_volume = models.DecimalField(max_digits=20, decimal_places=2)
     total_weight = models.DecimalField(max_digits=14, decimal_places=3)
