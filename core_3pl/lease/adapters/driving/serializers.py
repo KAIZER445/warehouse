@@ -26,3 +26,18 @@ class QuoteResponseSerializer(serializers.Serializer):
     status = serializers.CharField()
     minimum_required_space = serializers.DecimalField(max_digits=20, decimal_places=2)
     box_combination = serializers.JSONField()
+
+class ActivateLeaseSerializer(serializers.Serializer):
+    selected_space = serializers.DecimalField(
+        max_digits=20, decimal_places=2, min_value=Decimal("0.01")
+    )
+    term_months = serializers.IntegerField(min_value=1, max_value=36)
+    start_date = serializers.DateField()
+
+class ActivateLeaseResponseSerializer(serializers.Serializer):
+    lease_id = serializers.UUIDField(source="id")
+    status = serializers.CharField()
+    selected_space = serializers.DecimalField(max_digits=20, decimal_places=2)
+    term_months = serializers.IntegerField()
+    start_date = serializers.DateField()
+    end_date = serializers.DateField()

@@ -6,6 +6,7 @@ from .mappers import to_entity
 from uuid import UUID
 from lease.core.domain.entity import Lease
 from django.db import transaction
+from django.utils import timezone
 
 class LeaseRepository(LeasePort):
 
@@ -48,3 +49,19 @@ class LeaseRepository(LeasePort):
             ]
         )
         return leaseRow.id
+
+    def get_by_id_and_tenant(self, lease_id, tenant_id):
+        row = LeaseModel.objects.filter(id = lease_id, tenant_id = tenant_id).first()
+        if row is not None:
+            return to_entity(row)
+        else:
+            return None
+
+    def activate(self, lease: Lease):
+        row = LeaseModel.objects.get(id=lease.id)
+        row.selected_space = lease.selected_space
+        row.term_months = lease.term_months
+        row.start_date = lease.start_date
+        row.end_date = lease.end_date
+        row.status = lease.status
+        row.save()
