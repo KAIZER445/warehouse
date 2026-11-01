@@ -113,7 +113,7 @@ class Lease:
     def calculate_total_volume(books: list[Book]) -> Decimal:
         total = Decimal("0")
         for book in books:
-            total += book.toal_volume
+            total += book.total_volume
         return total
 
     @staticmethod

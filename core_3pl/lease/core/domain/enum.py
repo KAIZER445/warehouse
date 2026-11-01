@@ -18,7 +18,7 @@ class Dimensions:
 
     @property
     def volume(self) -> Decimal:
-        return self.length * self.width * self.height
+        return Decimal(str(self.length * self.width * self.height))
 
 
 class BoxSize(Enum):

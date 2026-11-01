@@ -13,10 +13,12 @@ class TenantRepository(TenantPort):
         User.objects.filter(id=tenant.user_id).update(is_active=tenant.is_active)
 
     def count_active_leases(self, tenant_id):
-        # TODO: Wire up once the leasing app is built
-        # from leasing.models import SpaceLease
-        # return SpaceLease.objects.filter(tenant_id=tenant_id, status="ACTIVE").count()
-        return 0
+        from lease.models import Lease as LeaseModel
+        from lease.core.domain.enum import LeaseStatus
+
+        return LeaseModel.objects.filter(
+            tenant_id=tenant_id, status=LeaseStatus.ACTIVE
+        ).count()
 
     def create(self, user_id, company_name):
         row = Tenant.objects.create(user_id=user_id, company_name=company_name)

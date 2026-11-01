@@ -9,7 +9,7 @@ Unlike a general-purpose 3PL that handles arbitrary products (apparel, electroni
 - Book formats (Hardcover, Paperback, Mass Market Paperback, etc.) have fairly predictable dimensions and weight, which makes space calculation more reliable than with arbitrary product categories.
 - The business model is deliberately kept simple and self-service: **no manual approval step**. A tenant declares their inventory, the system calculates how much space they need, they choose a space size and a fixed rental term, pay upfront, and they're active — no human in the loop.
 - Every space lease is a **fully independent entity**. A tenant may hold multiple leases over time, but each one is validated, priced, and lifecycled entirely on its own, with no shared state or relationship to any other lease — even ones held by the same tenant. This keeps the core domain object simple and avoids cross-entity consistency problems.
-- Leasing is fixed-term only (1, 3, 6, or 12 months), paid upfront, with no refunds and no renewals. When a term ends, the space is released outright — a tenant who wants to continue must submit a brand new request.
+- Leasing is fixed-term (1 to 36 months), paid upfront, with no refunds and no renewals. When a term ends, the space is released outright — a tenant who wants to continue must submit a brand new request.
 
 This document lays out the full process flow, including every validation rule, from tenant registration through to lease expiry or cancellation. This is the backend business logic only — no UI, physical warehouse operations, or payment gateway integration details are covered here.
 
@@ -37,12 +37,12 @@ This document lays out the full process flow, including every validation rule, f
 - Tenant selects a space size
 - **Validation 4a:** `selected_space >= minimum_required_space`
   - Reject if below: *"Selected space is below the minimum required for your declared inventory."*
-- **Validation 4b:** `selected_space <= 2 × minimum_required_space`
+- **Validation 4b:** `selected_space <= 3 × minimum_required_space`
   - Reject if above: *"Requested space significantly exceeds your declared inventory. Please review your quantities."*
 
 ### Step 5: Term Selection
-- Tenant selects a fixed term: 1, 3, 6, or 12 months
-- **Validation 5a:** Term must be one of the allowed fixed values (no custom durations)
+- Tenant selects a term between 1 and 36 months
+- **Validation 5a:** Term must be an integer between 1 and 36 months
 
 ### Step 6: Global Capacity Check
 - System checks: `current_allocated_space + selected_space <= global_capacity`

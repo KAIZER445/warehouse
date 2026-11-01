@@ -48,6 +48,8 @@ class ActivateLease(APIView):
                 term_months=data["term_months"],
                 start_date=data["start_date"],
             )
+        except LookupError as e:
+            return Response({"error": str(e)}, status=404)
         except ValueError as e:
             return Response({"error": str(e)}, status=400)
 
