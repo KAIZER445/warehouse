@@ -1,0 +1,6 @@
+services:
+    store_db:
+        image: postgres:17
+        container_name: store_db
+        ports:
+            - "5433:2345"
