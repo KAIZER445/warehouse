@@ -3,6 +3,7 @@ from lease.core.domain.ports import Lease as LeasePort
 from lease.core.domain.entity import Lease
 from lease.core.domain.dto import QuoteResult
 from django.db import transaction
+from lease.signals import lease_activated
 
 class LeaseService(LeaseServicePort):
     def __init__(self, repo: LeasePort):
@@ -32,5 +33,10 @@ class LeaseService(LeaseServicePort):
 
         # need to check for allocation space from capacity app
         self.repo.activate(lease=lease)
-
+        
+        transaction.on_commit(
+            lambda: lease_activated.send(
+                sender = self.__class__
+            )
+        )
         return lease

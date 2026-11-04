@@ -6,6 +6,7 @@ from lease.adapters.driven.repository import LeaseRepository
 from .serializers import CreateQuoteSerializer, QuoteResponseSerializer, ActivateLeaseSerializer, ActivateLeaseResponseSerializer
 from lease.core.domain.book import Book
 from rest_framework.response import Response
+from lease.signals import lease_activated
 
 class CreateQuote(APIView):
     permission_classes = (IsTenant,)
@@ -54,3 +55,12 @@ class ActivateLease(APIView):
             return Response({"error": str(e)}, status=400)
 
         return Response(ActivateLeaseResponseSerializer(result).data, status=200)
+
+class DemoSignalView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def post(self, request):
+        fake_id = 123
+        lease_activated.send(sender=self.__class__, lease_id=fake_id)
+        return Response({"fired_for": str(fake_id)})
