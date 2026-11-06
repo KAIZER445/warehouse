@@ -36,7 +36,7 @@ class LeaseService(LeaseServicePort):
         
         transaction.on_commit(
             lambda: lease_activated.send(
-                sender = self.__class__
+                sender = self.__class__, lease = lease
             )
         )
         return lease
