@@ -1,10 +1,24 @@
 from datetime import datetime, timezone
+
+
 class Tenant:
-    def __init__(self, id, user_id, company_name, is_active, created_at, updated_at):
+    def __init__(
+        self,
+        id,
+        user_id,
+        company_name,
+        is_active,
+        created_at,
+        updated_at,
+        base_url="",
+        encrypted_secret="",
+    ):
         self.id = id
         self.user_id = user_id
         self.company_name = company_name
         self.is_active = is_active
+        self.base_url = base_url
+        self.encrypted_secret = encrypted_secret
         self.created_at = created_at
         self.updated_at = updated_at
 

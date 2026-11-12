@@ -12,7 +12,10 @@ class UserService(UserServicePort):
         user = self.user_repo.create(email=email, password=password, role=role)
         if role == Role.TENANT:
             self.tenant_repo.create(
-                user_id=user.id, company_name=profile_data["company_name"]
+                user_id=user.id,
+                company_name=profile_data["company_name"],
+                encrypted_secret=profile_data["encrypted_secret"],
+                base_url=profile_data["base_url"],
             )
         elif role == Role.OPS:
             self.ops_repo.create(

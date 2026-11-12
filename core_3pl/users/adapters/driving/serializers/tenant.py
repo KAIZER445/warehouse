@@ -15,5 +15,6 @@ class TenantGetSerializer(serializers.Serializer):
     id = serializers.UUIDField()
     user = serializers.UUIDField(source="user_id")
     company_name = serializers.CharField()
+    base_url = serializers.CharField()
     created_at = serializers.DateTimeField()
     updated_at = serializers.DateTimeField()
