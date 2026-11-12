@@ -12,7 +12,9 @@ Content-Type: {{contentType}}
   "email": "tenant1@example.com",
   "password": "StrongPass123",
   "role": "tenant",
-  "company_name": "Acme Corp"
+  "company_name": "Acme Corp",
+  "base_url": "https://tenant1.example.com",
+  "encrypted_secret": "tenant1_shared_hmac_secret"
 }
 
 ### ------------------------------------------------------------
@@ -50,7 +52,9 @@ Content-Type: {{contentType}}
 {
   "email": "nopass@example.com",
   "role": "tenant",
-  "company_name": "No Password Inc"
+  "company_name": "No Password Inc",
+  "base_url": "https://nopass.example.com",
+  "encrypted_secret": "nopass_secret"
 }
 
 ### ------------------------------------------------------------
@@ -63,7 +67,9 @@ Content-Type: {{contentType}}
   "email": "shortpass@example.com",
   "password": "123",
   "role": "tenant",
-  "company_name": "Short Pass LLC"
+  "company_name": "Short Pass LLC",
+  "base_url": "https://shortpass.example.com",
+  "encrypted_secret": "shortpass_secret"
 }
 
 ### ------------------------------------------------------------
@@ -76,7 +82,9 @@ Content-Type: {{contentType}}
   "email": "tenant1@example.com",
   "password": "StrongPass123",
   "role": "tenant",
-  "company_name": "Duplicate Co"
+  "company_name": "Duplicate Co",
+  "base_url": "https://dup.example.com",
+  "encrypted_secret": "dup_secret"
 }
 
 ### ------------------------------------------------------------
@@ -92,7 +100,9 @@ Content-Type: {{contentType}}
   "role": "tenant",
   "is_active": false,
   "user": 1,
-  "company_name": "Sneaky Inc"
+  "company_name": "Sneaky Inc",
+  "base_url": "https://sneaky.example.com",
+  "encrypted_secret": "sneaky_secret"
 }
 
 ### ------------------------------------------------------------

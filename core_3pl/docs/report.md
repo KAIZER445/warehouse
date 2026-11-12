@@ -20,10 +20,24 @@ The codebase implements Hexagonal Architecture (Domain Entities, Ports, Services
 - **Migrations Applied**: Generated and applied initial migrations for `capacity`, `lease`, `inventory`, and `logs`.
 - **Capacity Seeder Command (`capacity/management/commands/seed_capacity.py`)**: Implemented management command to initialize default warehouse capacity.
 - **Automated Test Coverage**: Added test suites in `users/tests.py`, `capacity/tests.py`, and `lease/tests.py` verifying all 13 endpoint scenarios.
+- **Tenant HMAC Model Migration (`users/migrations/0002_tenant_base_url_tenant_encrypted_secret.py`)**: Generated and applied migration to add `base_url` and `encrypted_secret` fields to `Tenant` model in PostgreSQL.
+- **Tenant Entity & Ports Synchronization (`users/core/domain/entities/tenant.py`, `ports/tenant.py`)**: Updated `Tenant` entity constructor and `TenantPort.create` signature to accept `base_url` and `encrypted_secret`, matching `TenantRepository.create` and `mappers/tenant.py`.
+- **User Service Registration Flow (`users/core/application/services/user.py`)**: Updated `UserService.register` to propagate `base_url` and `encrypted_secret` from profile data into `TenantRepository.create`.
+- **Tenant Serializer Updates (`users/adapters/driving/serializers/tenant.py`)**: Updated `TenantGetSerializer` to include `base_url` (while keeping sensitive `encrypted_secret` hidden).
+- **Test Suite Updates (`users/tests.py`, `lease/tests.py`)**: Updated tenant registration test payloads to supply required `base_url` and `encrypted_secret` fields, and added tenant listing test asserting `base_url` output without secret leakage.
+- **Mock Storefront App Registry & Migration (`mock_storefront/config/settings.py`)**: Registered `inventory` in `INSTALLED_APPS` and updated `ALLOWED_HOSTS = ['*']`, then generated and applied initial migrations for `mock_storefront/inventory`.
 
 ---
 
 ## 3. Remaining Tasks & Notes
+
+### In-Progress (User Owned)
+1. **Storefront Webhook & HMAC Signal (`lease/signals.py`)**:
+   - Currently being implemented by developer to dispatch `lease.activated` webhook with HMAC signature to `tenant.base_url`.
+   - *Notes/Gotchas for signal implementation:*
+     - Querying tenant: use `TenantModel.objects.filter(id=lease.tenant_id).first()` instead of `.first(id=...)`.
+     - Response status check: `response.status_code` is an int attribute (not a method).
+     - Ensure `requests` is installed in the runtime environment.
 
 ### Critical / Functional
 1. **Unconnected Capacity in Lease Activation**

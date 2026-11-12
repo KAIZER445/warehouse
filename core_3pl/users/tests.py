@@ -15,11 +15,16 @@ class UserEndpointsTestCase(TestCase):
             "email": "t_test@example.com",
             "password": "Password123!",
             "role": "tenant",
-            "company_name": "Test Company"
+            "company_name": "Test Company",
+            "base_url": "https://testcompany.example.com",
+            "encrypted_secret": "test_hmac_secret_123"
         }, format="json")
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         self.assertTrue(User.objects.filter(email="t_test@example.com").exists())
-        self.assertTrue(Tenant.objects.filter(company_name="Test Company").exists())
+        tenant = Tenant.objects.filter(company_name="Test Company").first()
+        self.assertIsNotNone(tenant)
+        self.assertEqual(tenant.base_url, "https://testcompany.example.com")
+        self.assertEqual(tenant.encrypted_secret, "test_hmac_secret_123")
 
     def test_ops_registration(self):
         res = self.client.post("/user/register/", {
@@ -74,7 +79,9 @@ class UserEndpointsTestCase(TestCase):
             "email": "tenant_lease@example.com",
             "password": "Password123!",
             "role": "tenant",
-            "company_name": "Leased Co"
+            "company_name": "Leased Co",
+            "base_url": "https://leasedco.example.com",
+            "encrypted_secret": "leased_co_secret_456"
         }, format="json")
         tenant = Tenant.objects.get(company_name="Leased Co")
 
@@ -92,3 +99,37 @@ class UserEndpointsTestCase(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {ops_token}")
         deact_res = self.client.post(f"/user/tenants/{tenant.id}/deactivate/")
         self.assertEqual(deact_res.status_code, status.HTTP_409_CONFLICT)
+
+    def test_list_tenants(self):
+        # Register Ops
+        self.client.post("/user/register/", {
+            "email": "ops_list_t@example.com",
+            "password": "Password123!",
+            "role": "ops",
+            "full_name": "Tenant List Ops",
+            "department": "customer_support"
+        }, format="json")
+        tok_res = self.client.post("/api/token/", {
+            "email": "ops_list_t@example.com",
+            "password": "Password123!"
+        }, format="json")
+        ops_token = tok_res.data["access"]
+
+        # Register Tenant
+        self.client.post("/user/register/", {
+            "email": "listed_tenant@example.com",
+            "password": "Password123!",
+            "role": "tenant",
+            "company_name": "Listed Tenant Inc",
+            "base_url": "https://listed.example.com",
+            "encrypted_secret": "sensitive_hmac_secret"
+        }, format="json")
+
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {ops_token}")
+        res = self.client.get("/user/list/tenants/")
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        tenants = res.data
+        self.assertTrue(any(t["company_name"] == "Listed Tenant Inc" for t in tenants))
+        matched = next(t for t in tenants if t["company_name"] == "Listed Tenant Inc")
+        self.assertEqual(matched["base_url"], "https://listed.example.com")
+        self.assertNotIn("encrypted_secret", matched)

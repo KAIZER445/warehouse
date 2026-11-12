@@ -12,7 +12,9 @@ class LeaseEndpointsTestCase(TestCase):
             "email": "lease_tenant@example.com",
             "password": "Password123!",
             "role": "tenant",
-            "company_name": "Lease Test Co"
+            "company_name": "Lease Test Co",
+            "base_url": "https://lease-test.com",
+            "encrypted_secret": "secret_lease_123"
         }, format="json")
         tok_res = self.client.post("/api/token/", {
             "email": "lease_tenant@example.com",
