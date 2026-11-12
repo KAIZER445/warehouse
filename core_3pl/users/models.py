@@ -50,3 +50,9 @@ class Tenant(BaseModel):
     company_name = models.CharField(
         unique=True, max_length=255, null=False, blank=False
     )
+    base_url = models.CharField(
+        unique=True, max_length=255, null=False, blank=False
+    )
+    encrypted_secret = models.CharField(
+        unique=True, max_length=255, null=False, blank=False
+    )

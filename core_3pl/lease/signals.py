@@ -1,6 +1,9 @@
+import requests
 from django.dispatch import Signal, receiver
-from lease.core.domain.entity import Lease
 from inventory.models import Inventory as InventoryModel
+from users.models import Tenant as TenantModel
+
+from lease.core.domain.entity import Lease
 
 lease_activated = Signal()
 
@@ -8,6 +11,7 @@ lease_activated = Signal()
 @receiver(lease_activated)
 def send_books_to_storefront(sender, lease: Lease, **kwargs):
     lease_id = lease.id
+    tenant: TenantModel = TenantModel.objects.first(id=lease.tenant_id)
     rows = InventoryModel.objects.filter(lease_id=lease_id)
     books = []
     for row in rows:
@@ -35,3 +39,13 @@ def send_books_to_storefront(sender, lease: Lease, **kwargs):
     payload = {"event": "lease.activated", "lease_id": str(lease_id), "books": books}
 
     print(payload)
+
+    url = "https://" + tenant.base_url + "/inventory/posts"
+
+    try:
+        response = requests.post(url, json=payload, timeout=10)
+        print("status code:", response.status_code())
+        print("Response JSON:", response.json())
+    except requests.exceptions.RequestException as e:
+        print(f"An error occured: {e}")
+

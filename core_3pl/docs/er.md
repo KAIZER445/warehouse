@@ -20,6 +20,8 @@ erDiagram
         uuid id PK
         uuid user_id FK
         string company_name
+        string base_url "e.g. https://tenant-abc.com, 3PL appends /inventory/posts"
+        string encrypted_secret "HMAC shared secret, stored encrypted (not hashed)"
         datetime created_at
     }
 

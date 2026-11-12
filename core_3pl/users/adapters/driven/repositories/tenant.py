@@ -20,8 +20,8 @@ class TenantRepository(TenantPort):
             tenant_id=tenant_id, status=LeaseStatus.ACTIVE
         ).count()
 
-    def create(self, user_id, company_name):
-        row = Tenant.objects.create(user_id=user_id, company_name=company_name)
+    def create(self, user_id, company_name, encrypted_secret, base_url):
+        row = Tenant.objects.create(user_id=user_id, company_name=company_name, encrypted_secret=encrypted_secret, base_url=base_url)
         row = Tenant.objects.select_related("user").get(id=row.id)
         return to_entity(row)
 
