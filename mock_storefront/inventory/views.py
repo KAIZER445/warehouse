@@ -1,3 +1,9 @@
-from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
-# Create your views here.
+@csrf_exempt
+class inventoryPosts(APIView):
+
+    def post():
+        return Response("hello")
