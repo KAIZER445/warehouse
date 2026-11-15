@@ -1,6 +1,10 @@
 from users.core.domain.enums import Role
 from users.core.domain.ports import UserPort, UserServicePort, TenantPort, OpsPort
+from cryptography.fernet import Fernet
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
 
 class UserService(UserServicePort):
     def __init__(self, user_repo: UserPort, tenant_repo: TenantPort, ops_repo: OpsPort):
@@ -11,10 +15,15 @@ class UserService(UserServicePort):
     def register(self, email, password, role, profile_data):
         user = self.user_repo.create(email=email, password=password, role=role)
         if role == Role.TENANT:
+
+            cipher = Fernet(os.environ['SECRET_ENCRYPTION_KEY'])
+            secret = profile_data["encrypted_secret"]
+            encrypted_bytes = cipher.encrypt(secret.encode("utf-8"))
+
             self.tenant_repo.create(
                 user_id=user.id,
                 company_name=profile_data["company_name"],
-                encrypted_secret=profile_data["encrypted_secret"],
+                encrypted_secret= encrypted_bytes,
                 base_url=profile_data["base_url"],
             )
         elif role == Role.OPS:

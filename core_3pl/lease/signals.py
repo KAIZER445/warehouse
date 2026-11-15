@@ -1,9 +1,20 @@
+import hashlib
+import os
+import json
+import hmac
+
 import requests
+from cryptography.fernet import Fernet
 from django.dispatch import Signal, receiver
+from dotenv import load_dotenv
 from inventory.models import Inventory as InventoryModel
 from users.models import Tenant as TenantModel
 
 from lease.core.domain.entity import Lease
+
+load_dotenv()
+
+cipher = Fernet(os.environ["SECRET_ENCRYPTION_KEY"])
 
 lease_activated = Signal()
 
@@ -11,7 +22,7 @@ lease_activated = Signal()
 @receiver(lease_activated)
 def send_books_to_storefront(sender, lease: Lease, **kwargs):
     lease_id = lease.id
-    tenant: TenantModel = TenantModel.objects.first(id=lease.tenant_id)
+    tenant: TenantModel = TenantModel.objects.get(id=lease.tenant_id)
     rows = InventoryModel.objects.filter(lease_id=lease_id)
     books = []
     for row in rows:
@@ -36,16 +47,25 @@ def send_books_to_storefront(sender, lease: Lease, **kwargs):
             }
         )
 
-    payload = {"event": "lease.activated", "lease_id": str(lease_id), "books": books}
 
-    print(payload)
-
+    decrypted_secret = cipher.decrypt(bytes(tenant.encrypted_secret))
+    
+    books_json = json.dumps(books, sort_keys=True, separators=(",", ":"))
+    
+    tag = hmac.new(decrypted_secret, books_json.encode("utf-8"), hashlib.sha256).hexdigest()
+    
+    payload = {
+        "event": "lease.activated",
+        "lease_id": str(lease_id),
+        "books": books,
+        "tag": tag,
+    }
+    
     url = "https://" + tenant.base_url + "/inventory/posts"
-
+    
     try:
         response = requests.post(url, json=payload, timeout=10)
-        print("status code:", response.status_code())
-        print("Response JSON:", response.json())
+        print("status code:", response.status_code)
+        print("Response text:", response.text)
     except requests.exceptions.RequestException as e:
-        print(f"An error occured: {e}")
-
+        print(f"An error occurred: {e}")
