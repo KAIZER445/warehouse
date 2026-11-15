@@ -1,3 +1,5 @@
+from lease.core.domain.enum import LeaseStatus
+from lease.models import Lease as LeaseModel
 from users.core.domain.ports import TenantPort
 from users.models import Tenant, User
 
@@ -13,8 +15,6 @@ class TenantRepository(TenantPort):
         User.objects.filter(id=tenant.user_id).update(is_active=tenant.is_active)
 
     def count_active_leases(self, tenant_id):
-        from lease.models import Lease as LeaseModel
-        from lease.core.domain.enum import LeaseStatus
 
         return LeaseModel.objects.filter(
             tenant_id=tenant_id, status=LeaseStatus.ACTIVE
