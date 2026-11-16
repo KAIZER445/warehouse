@@ -55,7 +55,6 @@ def send_books_to_storefront(sender, lease: Lease, **kwargs):
     tag = hmac.new(decrypted_secret, books_json.encode("utf-8"), hashlib.sha256).hexdigest()
     
     payload = {
-        "lease_id": str(lease_id),
         "books": books,
         "tag": tag,
     }
