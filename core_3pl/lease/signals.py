@@ -1,7 +1,7 @@
 import hashlib
-import os
-import json
 import hmac
+import json
+import os
 
 import requests
 from cryptography.fernet import Fernet
@@ -55,7 +55,6 @@ def send_books_to_storefront(sender, lease: Lease, **kwargs):
     tag = hmac.new(decrypted_secret, books_json.encode("utf-8"), hashlib.sha256).hexdigest()
     
     payload = {
-        "event": "lease.activated",
         "lease_id": str(lease_id),
         "books": books,
         "tag": tag,
