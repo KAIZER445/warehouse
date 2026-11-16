@@ -1,4 +1,7 @@
+from django.db import transaction
 from rest_framework import serializers
+
+from .models import Inventory as InventoryModel
 
 
 class BooksSerializer(serializers.Serializer):
@@ -20,6 +23,14 @@ class BooksSerializer(serializers.Serializer):
     updated_at = serializers.DateTimeField()
 
 class InventoryPayloadSerializer(serializers.Serializer):
-    lease_id = serializers.CharField()
-    books = BooksSerializer()
+    books = BooksSerializer(many=True)
     tag = serializers.CharField()
+
+    def create(self, validated_data):
+        books = validated_data["books"]
+        with transaction.atomic():
+            for book in books:
+                data = dict(book)
+                book_id = data.pop("id")
+                InventoryModel.objects.update_or_create(id=book_id, defaults=data)
+        return validated_data
